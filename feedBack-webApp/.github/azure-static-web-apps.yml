@@ -1,0 +1,33 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches: [main] # When you push to main branch
+  pull_request:
+    branches: [main] # When someone makes a pull request
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest # Uses a Linux machine
+    steps:
+    - uses: actions/checkout@v3 # Gets your code
+    
+    - name: Install Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18 # Uses Node.js 18
+    
+    - name: Install Dependencies
+      run: npm ci # Installs all packages
+    
+    - name: Build
+      run: npm run build # Builds your app
+    
+    - name: Deploy
+      uses: Azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        action: "upload"
+        app_location: "/" # Where your code lives
+        output_location: "dist" # Where built files are
